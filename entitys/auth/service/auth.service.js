@@ -1,4 +1,5 @@
 import User from '../../user/User.Schema.js';
+import bcrypt from 'bcryptjs';
 
 const authService = {};
 
@@ -22,7 +23,8 @@ authService.loginWithGoogle = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
 
-    const { name, email, user } = req;
+    const { name, email } = req;
+    let { user } = req;
 
     if (!user) {
       const randomPassword = '' + new Date();
