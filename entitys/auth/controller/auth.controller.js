@@ -3,35 +3,25 @@ import User from '../../user/User.Schema.js';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 dotenv.config();
-
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const authController = {};
 
-authController.loginWithEmail = async (req, res) => {
+authController.loginWithEmail = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    if (req.statusCode === 400) return next();
 
-    const user = await User.findOne({ email });
-
-    if (!user) throw new Error('이메일 혹은 비밀번호가 일치하지 않습니다.');
+    const { user } = req;
+    const { password } = req.body;
 
     const isMatch = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) throw new Error('이메일 혹은 비밀번호가 일치하지 않습니다.');
-
-    const token = await user.generateToken();
-
-    const options = {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: 'true',
-    };
-
-    res.status(200).cookie('token', token, options).json({ status: 'success' });
   } catch (e) {
-    res.status(400).json({ status: 'fail', error: e.message });
+    req.statusCode = 400;
+    req.error = e.message;
   }
+  next();
 };
 
 authController.loginWithGoogle = async (req, res) => {
