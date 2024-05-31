@@ -12,6 +12,7 @@ authService.loginWithEmail = async (req, res, next) => {
 
     req.statusCode = 200;
     req.token = token;
+    req.data = user;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
@@ -44,9 +45,26 @@ authService.loginWithGoogle = async (req, res, next) => {
 
     req.statusCode = 200;
     req.token = token;
+    req.data = user;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
+  }
+  next();
+};
+
+authService.logout = async (req, res, next) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    res.statusCode = 200;
+  } catch (e) {
+    req.statusCode = 400;
+    res.error = e.message;
   }
   next();
 };

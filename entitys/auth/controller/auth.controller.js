@@ -2,6 +2,7 @@ import { OAuth2Client } from 'google-auth-library';
 import User from '../../user/User.Schema.js';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import authController from './auth.controller';
 dotenv.config();
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
@@ -42,6 +43,18 @@ authController.loginWithGoogle = async (req, res, next) => {
     req.email = email;
     req.name = name;
     req.user = user;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
+authController.logout = async (req, res, next) => {
+  try {
+    const token = req.cookies['token'];
+
+    if (!token) throw new Error('로그인 상태가 아닙니다.');
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;

@@ -21,4 +21,6 @@ router.post(
   intercepter
 );
 
+router.get('/logout', authController.logout, authService.logout, intercepter);
+
 export default router;
