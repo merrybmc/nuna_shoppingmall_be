@@ -1,14 +1,19 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import indexRouter from './routes/index.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const app = express();
 
-require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // request.body 가 객체로 인식
 
+app.use('/api', indexRouter);
 const mongoURI = process.env.LOCAL_DB_ADDRESS;
 const port = process.env.PORT || 5000;
 

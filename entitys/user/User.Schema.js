@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const userSchema = Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    name: { type: true, required: true },
+    name: { type: String, required: true },
     level: { type: String, default: 'customer' }, // 2types: customer, admin
   },
   { timestamps: true }
@@ -20,4 +20,5 @@ userSchema.methods.toJSON = function () {
 };
 
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+
+export default User;
