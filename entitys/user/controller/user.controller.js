@@ -3,24 +3,18 @@ import User from '../User.Schema.js';
 
 const userController = {};
 
-userController.createUser = async (req, res) => {
+userController.createUser = async (req, res, next) => {
   try {
-    const { email, password, name, level = 'customer' } = req.body;
-    const user = await User.findOne({ email });
+    if (req.statusCode === 400) return next();
 
-    if (user) throw new Error('이미 가입된 이메일입니다.');
-
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-
-    const newUser = new User({ email, password: hash, name, level });
-
-    await newUser.save();
-
-    return res.status(200).json({ status: 'success', data: newUser });
+    // const { password } = req.body;
+    // const user = await User.findOne({ email });
+    // if (user) throw new Error('이미 가입된 이메일입니다j.');
   } catch (e) {
-    res.status(400).json({ status: 'fail', error: e.message });
+    req.statusCode = 400;
+    req.error = e.message;
   }
+  next();
 };
 
 export default userController;

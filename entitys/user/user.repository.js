@@ -1,4 +1,4 @@
-import User from './User.Schema';
+import User from './User.Schema.js';
 
 const userRepository = {};
 
@@ -9,7 +9,10 @@ userRepository.validEmail = async (req, res, next) => {
 
     if (user) throw new Error('이미 가입된 이메일입니다.');
   } catch (e) {
-    res.status(400).json({ status: 'fail', error: e.message });
+    req.statusCode = 400;
+    req.error = e.message;
   }
   next();
 };
+
+export default userRepository;
