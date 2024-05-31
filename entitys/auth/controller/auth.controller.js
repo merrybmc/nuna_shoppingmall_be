@@ -24,7 +24,7 @@ authController.loginWithEmail = async (req, res, next) => {
   next();
 };
 
-authController.loginWithGoogle = async (req, res) => {
+authController.loginWithGoogle = async (req, res, next) => {
   try {
     const { idToken } = req.body;
 
@@ -36,31 +36,17 @@ authController.loginWithGoogle = async (req, res) => {
     });
 
     const { email, name } = ticket.getPayload();
+
     let user = await User.findOne({ email });
-    if (!user) {
-      const randomPassword = '' + new Date();
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(randomPassword, salt);
-      user = new User({
-        name,
-        email,
-        password: hash,
-      });
-      await user.save();
-    }
 
-    const options = {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: 'true',
-    };
-
-    const token = await user.generateToken();
-
-    res.status(200).cookie('token', token, options).json({ status: 'success' });
+    req.email = email;
+    req.name = name;
+    req.user = user;
   } catch (e) {
-    res.status(400).json({ status: 'fail', error: e.message });
+    req.statusCode = 400;
+    req.error = e.message;
   }
+  next();
 };
 
 export default authController;

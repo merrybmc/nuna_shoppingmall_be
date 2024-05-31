@@ -14,6 +14,11 @@ router.post(
   intercepter
 );
 
-router.post('/logingoogle', authController.loginWithGoogle);
+router.post(
+  '/logingoogle',
+  authController.loginWithGoogle,
+  authService.loginWithGoogle,
+  intercepter
+);
 
 export default router;
