@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const corsOption = {
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000', 'https://d3dlvbxpgesgac.cloudfront.net'],
   credentials: true,
 };
 

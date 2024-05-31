@@ -58,16 +58,19 @@ authService.loginWithGoogle = async (req, res, next) => {
 // 로그아웃
 authService.logout = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     res.clearCookie('token', {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
     });
 
-    res.statusCode = 200;
+    req.statusCode = 200;
+    req.data = 'success';
   } catch (e) {
     req.statusCode = 400;
-    res.error = e.message;
+    req.error = e.message;
   }
   next();
 };
