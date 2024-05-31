@@ -2,7 +2,6 @@ import { OAuth2Client } from 'google-auth-library';
 import User from '../../user/User.Schema.js';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import authController from './auth.controller';
 dotenv.config();
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
