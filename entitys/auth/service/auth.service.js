@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 
 const authService = {};
 
+// 이메일 로그인
 authService.loginWithEmail = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
@@ -20,6 +21,7 @@ authService.loginWithEmail = async (req, res, next) => {
   next();
 };
 
+// 구글 로그인
 authService.loginWithGoogle = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
@@ -53,6 +55,7 @@ authService.loginWithGoogle = async (req, res, next) => {
   next();
 };
 
+// 로그아웃
 authService.logout = async (req, res, next) => {
   try {
     res.clearCookie('token', {

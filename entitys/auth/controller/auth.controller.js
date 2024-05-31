@@ -7,6 +7,7 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const authController = {};
 
+// 이메일 로그인
 authController.loginWithEmail = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
@@ -24,6 +25,7 @@ authController.loginWithEmail = async (req, res, next) => {
   next();
 };
 
+// 구글 로그인
 authController.loginWithGoogle = async (req, res, next) => {
   try {
     const { token } = req.body;
@@ -49,6 +51,7 @@ authController.loginWithGoogle = async (req, res, next) => {
   next();
 };
 
+// 로그아웃
 authController.logout = async (req, res, next) => {
   try {
     const token = req.cookies['token'];

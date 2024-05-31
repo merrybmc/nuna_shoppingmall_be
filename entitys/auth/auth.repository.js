@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
+const authRepository = {};
+
+// 토큰 검증
 authRepository.authenticate = async (req, res, next) => {
   try {
     const token = req.cookies['token'];
@@ -23,3 +26,5 @@ authRepository.authenticate = async (req, res, next) => {
   }
   next();
 };
+
+export default authRepository;

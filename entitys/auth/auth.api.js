@@ -6,6 +6,7 @@ import intercepter from '../../common/exception/http-exception.filter.js';
 
 const router = express.Router();
 
+// 이메일 로그인
 router.post(
   '/emaillogin',
   userRepository.validEmail,
@@ -14,6 +15,7 @@ router.post(
   intercepter
 );
 
+// 구글 로그인
 router.post(
   '/googlelogin',
   authController.loginWithGoogle,
@@ -21,6 +23,7 @@ router.post(
   intercepter
 );
 
+// 로그아웃
 router.get('/logout', authController.logout, authService.logout, intercepter);
 
 export default router;

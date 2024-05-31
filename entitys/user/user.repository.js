@@ -2,6 +2,7 @@ import User from './User.Schema.js';
 
 const userRepository = {};
 
+// 이메일 검증
 userRepository.validEmail = async (req, res, next) => {
   try {
     const { originalUrl } = req;
