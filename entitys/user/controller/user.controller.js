@@ -13,7 +13,7 @@ userController.createUser = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
-    const newUser = new User({ email, password, name, level });
+    const newUser = new User({ email, password: hash, name, level });
 
     await newUser.save();
 
