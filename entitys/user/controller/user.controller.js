@@ -5,7 +5,7 @@ const userController = {};
 
 userController.createUser = async (req, res) => {
   try {
-    let { email, password, name, level = 'customer' } = req.body;
+    const { email, password, name, level = 'customer' } = req.body;
     const user = await User.findOne({ email });
 
     if (user) throw new Error('이미 가입된 이메일입니다.');
