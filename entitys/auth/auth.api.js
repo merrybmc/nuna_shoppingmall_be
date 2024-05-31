@@ -7,7 +7,7 @@ import intercepter from '../../common/exception/http-exception.filter.js';
 const router = express.Router();
 
 router.post(
-  '/loginemail',
+  '/emaillogin',
   userRepository.validEmail,
   authController.loginWithEmail,
   authService.loginWithEmail,
@@ -15,7 +15,7 @@ router.post(
 );
 
 router.post(
-  '/logingoogle',
+  '/googlelogin',
   authController.loginWithGoogle,
   authService.loginWithGoogle,
   intercepter
