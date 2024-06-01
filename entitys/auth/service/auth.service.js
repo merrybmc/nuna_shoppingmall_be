@@ -58,6 +58,8 @@ authService.loginWithGoogle = async (req, res, next) => {
 // 카카오 로그인
 authService.loginWithKakao = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { email, kakaoAccessToken, kakaoId, name, connectedAt } = req;
     let { user } = req;
 
@@ -89,8 +91,11 @@ authService.loginWithKakao = async (req, res, next) => {
   next();
 };
 
+// 깃허브 로그인
 authService.loginWithGithubCallback = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { email, name } = req;
     let { user } = req;
 

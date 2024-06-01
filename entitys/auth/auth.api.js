@@ -31,6 +31,7 @@ router.get(
   intercepter
 );
 
+// 깃허브 로그인
 router.get('/githublogin', authController.loginWithGithub);
 router.get(
   '/githublogin/callback',
