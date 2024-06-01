@@ -55,6 +55,7 @@ authService.loginWithGoogle = async (req, res, next) => {
   next();
 };
 
+// 카카오 로그인
 authService.loginWithKakao = async (req, res, next) => {
   try {
     const { email, kakaoAccessToken, kakaoId, name, connectedAt } = req;
@@ -75,6 +76,38 @@ authService.loginWithKakao = async (req, res, next) => {
 
       await user.save();
     }
+    const token = await user.generateToken();
+
+    req.statusCode = 200;
+    req.token = token;
+    req.data = user;
+    req.social = true;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
+authService.loginWithGithubCallback = async (req, res, next) => {
+  try {
+    const { email, name } = req;
+    let { user } = req;
+
+    if (!user) {
+      const randomPassword = '' + new Date();
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(randomPassword, salt);
+
+      user = new User({
+        email,
+        password: hash,
+        name,
+      });
+
+      await user.save();
+    }
+
     const token = await user.generateToken();
 
     req.statusCode = 200;

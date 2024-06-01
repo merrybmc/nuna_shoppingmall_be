@@ -31,6 +31,14 @@ router.get(
   intercepter
 );
 
+router.get('/githublogin', authController.loginWithGithub);
+router.get(
+  '/githublogin/callback',
+  authController.loginWithGithubCallback,
+  authService.loginWithGithubCallback,
+  intercepter
+);
+
 // 로그아웃
 router.post('/logout', authController.logout, authService.logout, intercepter);
 
