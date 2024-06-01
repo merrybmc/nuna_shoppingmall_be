@@ -55,6 +55,43 @@ authService.loginWithGoogle = async (req, res, next) => {
   next();
 };
 
+authService.loginWithKakao = async (req, res, next) => {
+  try {
+    const { email, kakaoAccessToken, kakaoId, name, connectedAt } = req;
+    let { user } = req;
+
+    console.log(email, kakaoAccessToken, kakaoId, name, connectedAt);
+    console.log(3);
+    if (!user) {
+      const randomPassword = '' + new Date();
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(randomPassword, salt);
+      console.log(3.5);
+      user = new User({
+        email,
+        password: hash,
+        name,
+        kakaoAccessToken,
+        kakaoId,
+        connectedAt,
+      });
+
+      await user.save();
+    }
+    const token = await user.generateToken();
+
+    req.statusCode = 200;
+    req.token = token;
+    req.data = user;
+    req.social = true;
+    console.log(3.8);
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
 // 로그아웃
 authService.logout = async (req, res, next) => {
   try {

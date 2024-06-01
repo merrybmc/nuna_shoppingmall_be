@@ -23,6 +23,14 @@ router.post(
   intercepter
 );
 
+// 카카오 로그인
+router.get(
+  '/callback/kakao',
+  authController.loginWithKakao,
+  authService.loginWithKakao,
+  intercepter
+);
+
 // 로그아웃
 router.post('/logout', authController.logout, authService.logout, intercepter);
 
