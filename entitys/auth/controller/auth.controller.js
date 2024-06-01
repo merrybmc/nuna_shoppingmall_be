@@ -59,7 +59,6 @@ authController.loginWithGoogle = async (req, res, next) => {
 // 카카오 로그인
 authController.loginWithKakao = async (req, res, next) => {
   try {
-    console.log(1);
     const kakaoToken = await axios({
       method: 'POST',
       url: 'https://kauth.kakao.com/oauth/token',
@@ -80,8 +79,7 @@ authController.loginWithKakao = async (req, res, next) => {
         Authorization: `Bearer ${kakaoToken.data.access_token}`,
       },
     });
-    // console.log(token.data, user.data);
-    console.log(2);
+
     const email = 'kakao' + kakaoUser.data.id;
     const user = await User.findOne({ email });
 

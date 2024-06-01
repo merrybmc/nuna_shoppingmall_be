@@ -8,7 +8,6 @@ const intercepter = async (req, res) => {
   const { data, error } = req;
 
   if (req.statusCode === 200 && req.token && req.social === true) {
-    console.log(4);
     res.status(200).cookie('token', req.token, options);
     return res.redirect('http://localhost:3000/auth/socialLoginCallback');
   } else if (req.statusCode === 200 && req.token)

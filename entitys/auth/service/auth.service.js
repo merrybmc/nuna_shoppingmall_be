@@ -60,13 +60,10 @@ authService.loginWithKakao = async (req, res, next) => {
     const { email, kakaoAccessToken, kakaoId, name, connectedAt } = req;
     let { user } = req;
 
-    console.log(email, kakaoAccessToken, kakaoId, name, connectedAt);
-    console.log(3);
     if (!user) {
       const randomPassword = '' + new Date();
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(randomPassword, salt);
-      console.log(3.5);
       user = new User({
         email,
         password: hash,
@@ -84,7 +81,6 @@ authService.loginWithKakao = async (req, res, next) => {
     req.token = token;
     req.data = user;
     req.social = true;
-    console.log(3.8);
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
