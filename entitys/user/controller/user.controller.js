@@ -40,9 +40,17 @@ userController.getUserInfo = async (req, res, next) => {
 // 이름 변경
 userController.changeName = async (req, res, next) => {
   try {
+    const { validTokenId } = req;
+    const { name } = req.body;
+
+    if (name.length > 8) throw new Error('이름은 8자 이상 입력 불가능합니다.');
+
+    const user = await User.findById(validTokenId);
+
+    if (name === user.name) throw new Error('기존 이름과 변경할 이름이 동일합니다.');
   } catch (e) {
-    e.statusCode = 400;
-    e.error = e.message;
+    req.statusCode = 400;
+    req.error = e.message;
   }
   next();
 };
@@ -51,8 +59,8 @@ userController.changeName = async (req, res, next) => {
 userController.changePassword = async (req, res, next) => {
   try {
   } catch (e) {
-    e.statusCode = 400;
-    e.error = e.message;
+    req.statusCode = 400;
+    req.error = e.message;
   }
   next();
 };
@@ -61,8 +69,8 @@ userController.changePassword = async (req, res, next) => {
 userController.deleteUser = async (req, res, next) => {
   try {
   } catch (e) {
-    e.statusCode = 400;
-    e.error = e.message;
+    req.statusCode = 400;
+    req.error = e.message;
   }
   next();
 };

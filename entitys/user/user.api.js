@@ -4,7 +4,6 @@ import userRepository from './user.repository.js';
 import userService from './service/user.service.js';
 import intercepter from './../../common/exception/http-exception.filter.js';
 import authRepository from '../auth/auth.repository.js';
-import authRepository from './../auth/auth.repository';
 
 const router = express.Router();
 
@@ -30,7 +29,6 @@ router.get(
 router.post(
   '/changename',
   authRepository.authenticate,
-  userRepository.validEmail,
   userController.changeName,
   userService.changeName,
   intercepter
@@ -40,7 +38,6 @@ router.post(
 router.post(
   '/changepassword',
   authRepository.authenticate,
-  userRepository.validEmail,
   userRepository.validPassword,
   userController.changePassword,
   userService.changePassword,

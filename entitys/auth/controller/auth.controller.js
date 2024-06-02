@@ -102,7 +102,6 @@ authController.loginWithKakao = async (req, res, next) => {
 authController.loginWithGithub = async (req, res, next) => {
   try {
     const url = 'https://github.com/login/oauth/authorize';
-    console.log(1);
     const config = {
       client_id: GITHUB_CLIENT_ID,
       scope: 'read:user user:email', // scope : 서버에서 필요로 하는 정보 (유저(이름), 이메일)
