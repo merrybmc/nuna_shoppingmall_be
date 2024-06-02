@@ -38,6 +38,7 @@ authService.loginWithGoogle = async (req, res, next) => {
         email,
         password: hash,
         name,
+        kind: 'google',
       });
 
       await user.save();
@@ -74,6 +75,7 @@ authService.loginWithKakao = async (req, res, next) => {
         kakaoAccessToken,
         kakaoId,
         connectedAt,
+        kind: 'kakao',
       });
 
       await user.save();
@@ -108,6 +110,7 @@ authService.loginWithGithubCallback = async (req, res, next) => {
         email,
         password: hash,
         name,
+        kind: 'github',
       });
 
       await user.save();

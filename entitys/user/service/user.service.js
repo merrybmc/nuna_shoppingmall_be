@@ -12,7 +12,7 @@ userService.createUser = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
-    const newUser = new User({ email, password: hash, name, level });
+    const newUser = new User({ email, password: hash, name, level, kind: 'email' });
 
     await newUser.save();
 
