@@ -37,4 +37,34 @@ userController.getUserInfo = async (req, res, next) => {
   next();
 };
 
+// 이름 변경
+userController.changeName = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
+  }
+  next();
+};
+
+// 비밀번호 변경
+userController.changePassword = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
+  }
+  next();
+};
+
+// 회원 탈퇴
+userController.deleteUser = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
+  }
+  next();
+};
+
 export default userController;

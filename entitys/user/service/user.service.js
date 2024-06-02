@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import User from '../User.Schema.js';
+import userService from './user.service';
 
 const userService = {};
 
@@ -37,6 +38,36 @@ userService.getUserInfo = async (req, res, next) => {
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
+  }
+  next();
+};
+
+// 이름 변경
+userService.changeName = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
+  }
+  next();
+};
+
+// 비밀번호 변경
+userService.changePassword = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
+  }
+  next();
+};
+
+// 회원 탈퇴
+userService.deleteUser = async (req, res, next) => {
+  try {
+  } catch (e) {
+    e.statusCode = 400;
+    e.error = e.message;
   }
   next();
 };

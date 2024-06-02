@@ -21,4 +21,14 @@ userRepository.validEmail = async (req, res, next) => {
   next();
 };
 
+// 비밀번호 검증
+userRepository.validPassword = async (req, res, next) => {
+  try {
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
 export default userRepository;
