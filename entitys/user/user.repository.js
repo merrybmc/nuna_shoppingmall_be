@@ -31,10 +31,11 @@ userRepository.validPassword = async (req, res, next) => {
 
     const { user } = req;
     const { password } = req.body;
-
+    console.log(password, user.password);
     const isMatch = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) throw new Error('비밀번호가 일치하지 않습니다.');
+    req.statusCode = 200;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
@@ -54,6 +55,25 @@ userRepository.hasingPassword = async (req, res, next) => {
     const hash = bcrypt.hashSync(setPassword, salt);
 
     req.hash = hash;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
+// 회원 정보 조회
+userRepository.getUserInfo = async (req, res, next) => {
+  try {
+    if (req.statusCode === 400) return next();
+
+    const { validTokenId } = req;
+
+    const user = await User.findById(validTokenId);
+
+    if (!user) throw new Error('회원 정보를 조회할 수 없습니다.');
+
+    req.user = user;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;

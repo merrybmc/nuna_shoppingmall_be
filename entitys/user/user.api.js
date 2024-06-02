@@ -20,7 +20,7 @@ router.post(
 router.get(
   '/',
   authRepository.authenticate,
-  userController.getUserInfo,
+  userRepository.getUserInfo,
   userService.getUserInfo,
   intercepter
 );
@@ -45,11 +45,19 @@ router.post(
   intercepter
 );
 
+// 비밀번호 검증
+router.post(
+  '/validpassword',
+  authRepository.authenticate,
+  userRepository.getUserInfo,
+  userRepository.validPassword,
+  intercepter
+);
+
 // 회원 탈퇴
 router.post(
   '/deleteuser',
   authRepository.authenticate,
-  userRepository.validPassword,
   userController.deleteUser,
   userService.deleteUser,
   intercepter

@@ -83,6 +83,12 @@ userService.changePassword = async (req, res, next) => {
 userService.deleteUser = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
+
+    const { validTokenId } = req;
+
+    await User.findByIdAndDelete(validTokenId);
+
+    req.statusCode = 200;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
