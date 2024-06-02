@@ -12,6 +12,7 @@ const userSchema = Schema(
     password: { type: String, required: true },
     name: { type: String, required: true },
     level: { type: String, default: 'customer' }, // 2types: customer, admin
+    kind: { type: String },
   },
   { timestamps: true }
 );
