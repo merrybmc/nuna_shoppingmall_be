@@ -38,8 +38,9 @@ router.post(
 router.post(
   '/changepassword',
   authRepository.authenticate,
-  userRepository.validPassword,
   userController.changePassword,
+  userRepository.validPassword,
+  userRepository.hasingPassword,
   userService.changePassword,
   intercepter
 );

@@ -44,6 +44,8 @@ userService.getUserInfo = async (req, res, next) => {
 // 이름 변경
 userService.changeName = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { validTokenId } = req;
     const { name } = req.body;
     const newUser = await User.findByIdAndUpdate(validTokenId, { name });
@@ -62,6 +64,14 @@ userService.changeName = async (req, res, next) => {
 // 비밀번호 변경
 userService.changePassword = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
+    const { validTokenId, hash } = req;
+
+    const newUser = await User.findByIdAndUpdate(validTokenId, { password: hash });
+
+    req.statusCode = 200;
+    req.data = newUser;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
@@ -72,6 +82,7 @@ userService.changePassword = async (req, res, next) => {
 // 회원 탈퇴
 userService.deleteUser = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;

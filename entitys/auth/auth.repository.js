@@ -6,6 +6,7 @@ const authRepository = {};
 // 토큰 검증
 authRepository.authenticate = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
     const token = req.cookies['token'];
     let result = '';
 
