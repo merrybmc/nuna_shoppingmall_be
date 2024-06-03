@@ -5,11 +5,11 @@ const productSchema = Schema(
   {
     sku: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    image: { type: String, required: true },
-    category: { type: Array, required: true },
+    images: { type: [String], required: true },
+    category: { type: [String], required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    stock: { type: Object, required: true },
+    stock: { type: [Map], of: Number, required: true },
     status: { type: String, default: 'active' },
     isDeleted: { type: Boolean, default: false },
   },
@@ -24,4 +24,5 @@ productSchema.methods.toJSON = function () {
 };
 
 const Product = mongoose.model('Product', productSchema);
-module.exports = Product;
+
+export default Product;
