@@ -7,6 +7,7 @@ import productService from './service/product.service.js';
 
 const router = express.Router();
 
+// 상품 생성
 router.post(
   '/',
   authRepository.authenticate,
@@ -16,5 +17,7 @@ router.post(
   productService.createProduct,
   intercepter
 );
+
+router.get('/', productController.getProducts, productService.getProducts, intercepter);
 
 export default router;
