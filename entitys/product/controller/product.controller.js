@@ -7,7 +7,7 @@ productController.createProduct = async (req, res, next) => {
     const { sku } = req.body;
 
     const SearchProduct = await Product.findOne({ sku: sku });
-    console.log(SearchProduct);
+
     if (SearchProduct) throw new Error('이미 존재하는 이름의 상품입니다.');
   } catch (e) {
     req.statusCode = 400;
