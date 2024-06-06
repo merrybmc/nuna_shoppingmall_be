@@ -1,4 +1,7 @@
+import { response } from 'express';
 import Product from './../Product.Schema.js';
+
+const PAGE_SIZE = 5;
 
 const productController = {};
 
@@ -24,36 +27,74 @@ productController.getProducts = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
 
-    const { page, name, kind, category } = req.query;
+    const { page = 1, name, kind, category } = req.query;
+
+    let productList = {};
+    let cond = {};
 
     if (name) {
-      // case 1
-      // const cond = name ? { name: { $regex: name, $option: 'i' } } : {};
-      // const query = Product.find(cond);
-      // const productList = await query.exec();
-
-      // case 2
-      const products = await Product.find({ name: { $regex: name, $options: 'i' } });
-
-      req.products = products;
-      next();
+      cond.name = { $regex: name, $options: 'i' };
     }
-
-    let query = {};
-
     if (kind) {
-      query.kind = { $in: kind.split(',') };
+      cond.kind = { $in: kind.split(',') };
     }
     if (category) {
-      query.category = { $in: category.split(',') };
+      cond.category = { $in: category.split(',') };
     }
 
-    const products = await Product.find(query);
+    const query = Product.find(cond);
+
+    // const cond = name ? { name: { $regex: name, $options: 'i' } } : {};
+    // const query = Product.find(cond);
+
+    // if (kind) {
+    //   query.where('kind').in(kind.split(','));
+    // }
+
+    // if (category) {
+    //   query.where('category').in(category.split(','));
+    // }
+
+    if (!kind && !category) {
+      // 데이터 총 개수
+      const totalItemNum = await Product.find(cond).count();
+
+      // 총 페이지 개수
+      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+
+      // 현재 페이지
+      const currentPage = page;
+
+      // 페이지네이션
+      // mongoose 함수
+      // skip = 앞의 데이터를 숫자만큼 스킵
+      // limit = 보내줄 데이터 개수
+      query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
+
+      productList = {
+        totalItemNum,
+        totalPageNum,
+        currentPage,
+      };
+    }
+    // case 1
+    // const products = await Product.find({ name: { $regex: name, $options: 'i' } });
+
+    // case 2
+    const products = await query.exec();
 
     if (products.length === 0) throw new Error('상품이 존재하지 않습니다.');
 
+    // const productList = {
+    //   totalItemNum,
+    //   totalPageNum,
+    //   currentPage,
+    //   products,
+    // };
+
     if (!kind && !category) {
-      req.products = products;
+      productList = { ...productList, products };
+      req.products = productList;
     } else {
       const men = products.filter((item) => item.kind === 'men');
       const women = products.filter((item) => item.kind === 'women');
