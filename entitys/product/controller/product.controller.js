@@ -24,14 +24,27 @@ productController.getProducts = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
 
-    const { kind, category } = req.query;
+    const { page, name, kind, category } = req.query;
+
+    if (name) {
+      // case 1
+      // const cond = name ? { name: { $regex: name, $option: 'i' } } : {};
+      // const query = Product.find(cond);
+      // const productList = await query.exec();
+
+      // case 2
+      const products = await Product.find({ name: { $regex: name, $options: 'i' } });
+
+      req.products = products;
+      next();
+    }
 
     let query = {};
 
-    if (kind && kind !== 'null' && kind !== '') {
+    if (kind) {
       query.kind = { $in: kind.split(',') };
     }
-    if (category && category !== 'null' && category !== '') {
+    if (category) {
       query.category = { $in: category.split(',') };
     }
 
@@ -39,25 +52,29 @@ productController.getProducts = async (req, res, next) => {
 
     if (products.length === 0) throw new Error('상품이 존재하지 않습니다.');
 
-    const men = products.filter((item) => item.kind === 'men');
-    const women = products.filter((item) => item.kind === 'women');
-    const kids = products.filter((item) => item.kind === 'kids');
-    const top = products.filter((item) => item.category === 'top');
-    const bottom = products.filter((item) => item.category === 'bottom');
-    const shoes = products.filter((item) => item.category === 'shoes');
-    const bag = products.filter((item) => item.category === 'bag');
-    const accessory = products.filter((item) => item.category === 'accessory');
+    if (!kind && !category) {
+      req.products = products;
+    } else {
+      const men = products.filter((item) => item.kind === 'men');
+      const women = products.filter((item) => item.kind === 'women');
+      const kids = products.filter((item) => item.kind === 'kids');
+      const top = products.filter((item) => item.category === 'top');
+      const bottom = products.filter((item) => item.category === 'bottom');
+      const shoes = products.filter((item) => item.category === 'shoes');
+      const bag = products.filter((item) => item.category === 'bag');
+      const accessory = products.filter((item) => item.category === 'accessory');
 
-    req.products = {
-      menData: men,
-      womenData: women,
-      kidsData: kids,
-      topData: top,
-      bottomData: bottom,
-      shoesData: shoes,
-      bagData: bag,
-      accessoryData: accessory,
-    };
+      req.products = {
+        menData: men,
+        womenData: women,
+        kidsData: kids,
+        topData: top,
+        bottomData: bottom,
+        shoesData: shoes,
+        bagData: bag,
+        accessoryData: accessory,
+      };
+    }
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
