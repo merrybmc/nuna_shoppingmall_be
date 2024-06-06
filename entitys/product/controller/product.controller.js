@@ -65,6 +65,8 @@ productController.getProducts = async (req, res, next) => {
       // 현재 페이지
       const currentPage = page;
 
+      const keyword = name;
+
       // 페이지네이션
       // mongoose 함수
       // skip = 앞의 데이터를 숫자만큼 스킵
@@ -72,6 +74,7 @@ productController.getProducts = async (req, res, next) => {
       query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
 
       productList = {
+        keyword,
         totalItemNum,
         totalPageNum,
         currentPage,
