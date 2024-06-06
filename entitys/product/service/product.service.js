@@ -7,7 +7,7 @@ productService.createProduct = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
 
-    const { sku, name, size, category, description, price, stock, status } = req.body;
+    const { sku, name, size, kind, category, description, price, stock, status } = req.body;
 
     const images = req.files.map((file) => file.location);
 
@@ -16,7 +16,8 @@ productService.createProduct = async (req, res, next) => {
       name,
       size,
       images,
-      category: JSON.parse(category),
+      kind,
+      category,
       description,
       price,
       stock: JSON.parse(stock),
@@ -34,6 +35,7 @@ productService.createProduct = async (req, res, next) => {
   next();
 };
 
+// 상품 조회
 productService.getProducts = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();

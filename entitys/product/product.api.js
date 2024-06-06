@@ -18,6 +18,7 @@ router.post(
   intercepter
 );
 
+// 상품 조회
 router.get('/', productController.getProducts, productService.getProducts, intercepter);
 
 export default router;

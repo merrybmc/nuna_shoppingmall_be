@@ -19,15 +19,45 @@ productController.createProduct = async (req, res, next) => {
   next();
 };
 
+// 상품 조회
 productController.getProducts = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
 
-    const products = await Product.find({});
+    const { kind, category } = req.query;
+
+    let query = {};
+
+    if (kind && kind !== 'null' && kind !== '') {
+      query.kind = { $in: kind.split(',') };
+    }
+    if (category && category !== 'null' && category !== '') {
+      query.category = { $in: category.split(',') };
+    }
+
+    const products = await Product.find(query);
 
     if (products.length === 0) throw new Error('상품이 존재하지 않습니다.');
 
-    req.products = products;
+    const men = products.filter((item) => item.kind === 'men');
+    const women = products.filter((item) => item.kind === 'women');
+    const kids = products.filter((item) => item.kind === 'kids');
+    const top = products.filter((item) => item.category === 'top');
+    const bottom = products.filter((item) => item.category === 'bottom');
+    const shoes = products.filter((item) => item.category === 'shoes');
+    const bag = products.filter((item) => item.category === 'bag');
+    const accessory = products.filter((item) => item.category === 'accessory');
+
+    req.products = {
+      menData: men,
+      womenData: women,
+      kidsData: kids,
+      topData: top,
+      bottomData: bottom,
+      shoesData: shoes,
+      bagData: bag,
+      accessoryData: accessory,
+    };
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
