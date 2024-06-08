@@ -4,8 +4,12 @@ const cartController = {};
 
 cartController.addItemToCart = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { validTokenId } = req;
     const { productId, size, qty } = req.body;
+
+    console.log(productId);
 
     let cart = await Cart.findOne({ validTokenId });
 
@@ -16,7 +20,7 @@ cartController.addItemToCart = async (req, res, next) => {
     }
 
     // 이미 카트에 들어가있는 아이템인지?
-    const existItem = cart.item.find(
+    const existItem = cart.items.find(
       (item) => item.productId.equals(productId) && item.size === size
     );
 
@@ -31,7 +35,7 @@ cartController.addItemToCart = async (req, res, next) => {
     req.data = cart;
   } catch (e) {
     req.statusCode = 400;
-    req.error = e.error;
+    req.error = e.message;
   }
   next();
 };
