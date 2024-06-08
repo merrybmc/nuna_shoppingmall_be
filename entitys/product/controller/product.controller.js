@@ -159,4 +159,24 @@ productController.updateProduct = async (req, res, next) => {
   next();
 };
 
+// 상품 삭제
+productController.deleteProduct = async (req, res, next) => {
+  try {
+    if (req.statusCode === 400) return next();
+
+    const { id } = req.params;
+
+    const deleteProduct = await Product.findByIdAndDelete(id, { isDeleted: true });
+
+    if (!deleteProduct) throw new Error('상품이 존재하지 않습니다.');
+
+    req.statusCode = 200;
+    req.data = deleteProduct;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
 export default productController;

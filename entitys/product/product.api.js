@@ -31,4 +31,11 @@ router.put(
   intercepter
 );
 
+router.delete(
+  '/:id',
+  authRepository.authenticate,
+  authRepository.checkAdminPermission,
+  productController.deleteProduct,
+  intercepter
+);
 export default router;
