@@ -22,6 +22,23 @@ productController.createProduct = async (req, res, next) => {
   next();
 };
 
+// 상품 생성
+productController.createProduct = async (req, res, next) => {
+  try {
+    if (req.statusCode === 400) return next();
+
+    const { sku } = req.body;
+
+    const SearchProduct = await Product.findOne({ sku: sku });
+
+    if (SearchProduct) throw new Error('이미 존재하는 이름의 상품입니다.');
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
 // 상품 조회
 productController.getProducts = async (req, res, next) => {
   try {
@@ -35,42 +52,26 @@ productController.getProducts = async (req, res, next) => {
     if (name) {
       cond.name = { $regex: name, $options: 'i' };
     }
-    if (kind) {
+
+    // Filtering logic based on provided kind and category values
+    if (kind && !category) {
       cond.kind = { $in: kind.split(',') };
-    }
-    if (category) {
+    } else if (!kind && category) {
+      cond.category = { $in: category.split(',') };
+    } else if (kind && category) {
+      cond.kind = { $in: kind.split(',') };
       cond.category = { $in: category.split(',') };
     }
 
     const query = Product.find(cond);
 
-    // const cond = name ? { name: { $regex: name, $options: 'i' } } : {};
-    // const query = Product.find(cond);
-
-    // if (kind) {
-    //   query.where('kind').in(kind.split(','));
-    // }
-
-    // if (category) {
-    //   query.where('category').in(category.split(','));
-    // }
-
+    // If neither kind nor category is provided, apply pagination
     if (!kind && !category) {
-      // 데이터 총 개수
       const totalItemNum = await Product.find(cond).count();
-
-      // 총 페이지 개수
       const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-
-      // 현재 페이지
       const currentPage = page;
-
       const keyword = name;
 
-      // 페이지네이션
-      // mongoose 함수
-      // skip = 앞의 데이터를 숫자만큼 스킵
-      // limit = 보내줄 데이터 개수
       query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
 
       productList = {
@@ -80,50 +81,76 @@ productController.getProducts = async (req, res, next) => {
         currentPage,
       };
     }
-    // case 1
-    // const products = await Product.find({ name: { $regex: name, $options: 'i' } });
 
-    // case 2
     const products = await query.exec();
 
     if (products.length === 0) throw new Error('상품이 존재하지 않습니다.');
-
-    // const productList = {
-    //   totalItemNum,
-    //   totalPageNum,
-    //   currentPage,
-    //   products,
-    // };
 
     if (!kind && !category) {
       productList = { ...productList, products };
       req.products = productList;
     } else {
-      const men = products.filter((item) => item.kind === 'men');
-      const women = products.filter((item) => item.kind === 'women');
-      const kids = products.filter((item) => item.kind === 'kids');
-      const top = products.filter((item) => item.category === 'top');
-      const bottom = products.filter((item) => item.category === 'bottom');
-      const shoes = products.filter((item) => item.category === 'shoes');
-      const bag = products.filter((item) => item.category === 'bag');
-      const accessory = products.filter((item) => item.category === 'accessory');
+      if ((kind && kind.split(',').length > 1) || (category && category.split(',').length > 1)) {
+        const men = products.filter((item) => item.kind === 'men');
+        const women = products.filter((item) => item.kind === 'women');
+        const kids = products.filter((item) => item.kind === 'kids');
+        const top = products.filter((item) => item.category === 'top');
+        const bottom = products.filter((item) => item.category === 'bottom');
+        const shoes = products.filter((item) => item.category === 'shoes');
+        const bag = products.filter((item) => item.category === 'bag');
+        const accessory = products.filter((item) => item.category === 'accessory');
 
-      req.products = {
-        menData: men,
-        womenData: women,
-        kidsData: kids,
-        topData: top,
-        bottomData: bottom,
-        shoesData: shoes,
-        bagData: bag,
-        accessoryData: accessory,
-      };
+        req.products = {
+          menData: men,
+          womenData: women,
+          kidsData: kids,
+          topData: top,
+          bottomData: bottom,
+          shoesData: shoes,
+          bagData: bag,
+          accessoryData: accessory,
+        };
+      } else {
+        req.products = { products };
+      }
     }
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
   }
   next();
+};
+
+productController.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { sku, name, size, price, description, category, stock, status } = req.body;
+
+    const images = req.files.map((file) => file.location);
+
+    const product = new Product({
+      sku,
+      name,
+      size,
+      images,
+      kind,
+      category,
+      description,
+      price,
+      stock: JSON.parse(stock),
+      status,
+    });
+
+    const updatedProduct = Product.findByIdAndUpdate({ id }, product, { new: true });
+
+    if (!updatedProduct) throw new Error('상품이 존재하지 않습니다.');
+
+    res.statusCode = 200;
+    res.data = updatedProduct;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
 };
 
 export default productController;

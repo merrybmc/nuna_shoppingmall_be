@@ -21,4 +21,13 @@ router.post(
 // 상품 조회
 router.get('/', productController.getProducts, productService.getProducts, intercepter);
 
+// 상품 수정
+router.put(
+  '/:id',
+  authRepository.authenticate,
+  authRepository.checkAdminPermission,
+  upload.array('images', 5),
+  productController.updateProduct
+);
+
 export default router;
