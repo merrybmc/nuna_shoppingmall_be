@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const User = require('../user/User.Schema');
-const Product = require('../product/Product.Schema');
+import mongoose from 'mongoose';
+import User from '../user/User.Schema.js';
+import Product from '../product/Product.Schema.js';
 const Schema = mongoose.Schema;
 
 const cartSchema = Schema(
@@ -25,4 +25,5 @@ cartSchema.methods.toJSON = function () {
 };
 
 const Cart = mongoose.model('Cart', cartSchema);
-module.exports = Cart;
+
+export default Cart;

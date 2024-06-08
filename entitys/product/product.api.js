@@ -27,7 +27,8 @@ router.put(
   authRepository.authenticate,
   authRepository.checkAdminPermission,
   upload.array('images', 5),
-  productController.updateProduct
+  productController.updateProduct,
+  intercepter
 );
 
 export default router;

@@ -121,36 +121,42 @@ productController.getProducts = async (req, res, next) => {
   next();
 };
 
-productController.updateProduct = async (req, res) => {
+// 상품 수정
+productController.updateProduct = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { id } = req.params;
-    const { sku, name, size, price, description, category, stock, status } = req.body;
+    const { sku, name, size, kind, category, description, price, stock, status } = req.body;
 
     const images = req.files.map((file) => file.location);
 
-    const product = new Product({
-      sku,
-      name,
-      size,
-      images,
-      kind,
-      category,
-      description,
-      price,
-      stock: JSON.parse(stock),
-      status,
-    });
-
-    const updatedProduct = Product.findByIdAndUpdate({ id }, product, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        sku,
+        name,
+        size,
+        images,
+        kind,
+        category,
+        description,
+        price,
+        stock: JSON.parse(stock),
+        status,
+      },
+      { new: true }
+    );
 
     if (!updatedProduct) throw new Error('상품이 존재하지 않습니다.');
 
-    res.statusCode = 200;
-    res.data = updatedProduct;
+    req.statusCode = 200;
+    req.data = updatedProduct;
   } catch (e) {
     req.statusCode = 400;
     req.error = e.message;
   }
+  next();
 };
 
 export default productController;

@@ -30,6 +30,8 @@ authRepository.authenticate = async (req, res, next) => {
 
 authRepository.checkAdminPermission = async (req, res, next) => {
   try {
+    if (req.statusCode === 400) return next();
+
     const { validTokenId } = req;
 
     const user = await User.findById(validTokenId);
