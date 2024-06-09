@@ -5,5 +5,6 @@ import cartController from './controller/cart.controller.js';
 const router = express.Router();
 
 router.post('/', authRepository.authenticate, cartController.addItemToCart, intercepter);
+router.get('/', authRepository.authenticate, cartController.getCart, intercepter);
 
 export default router;

@@ -1,7 +1,10 @@
+import { populate } from 'dotenv';
 import Cart from '../Cart.Schema.js';
+import cartController from './cart.controller';
 
 const cartController = {};
 
+// 카트 추가
 cartController.addItemToCart = async (req, res, next) => {
   try {
     if (req.statusCode === 400) return next();
@@ -30,6 +33,25 @@ cartController.addItemToCart = async (req, res, next) => {
     cart.items = [...cart.items, { productId, size, qty }];
 
     await cart.save();
+
+    req.statusCode = 200;
+    req.data = cart;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
+// 카트 조회
+cartController.getCart = async (req, res, next) => {
+  try {
+    const { validTokenId } = req;
+
+    const cart = await Cart.findOne({ validTokenId }).populate({
+      path: 'items',
+      populate: { path: 'productId', model: 'Product' },
+    });
 
     req.statusCode = 200;
     req.data = cart;
