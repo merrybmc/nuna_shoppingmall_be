@@ -1,6 +1,5 @@
 import { populate } from 'dotenv';
 import Cart from '../Cart.Schema.js';
-import cartController from './cart.controller';
 
 const cartController = {};
 
