@@ -77,4 +77,36 @@ cartController.deleteCartItem = async (req, res, next) => {
   next();
 };
 
+// 개수 수정
+cartController.editCartItem = async (req, res, next) => {
+  try {
+    const { validTokenId } = req;
+    const { id } = req.params;
+
+    const { qty } = req.body;
+    const cart = await Cart.findOne({ validTokenId }).populate({
+      path: 'items',
+      populate: {
+        path: 'productId',
+        model: 'Product',
+      },
+    });
+
+    if (!cart) throw new Error('카트에 해당 유저 정보가 없습니다.');
+
+    const index = cart.items.findIndex((item) => item._id.equals(id));
+
+    if (index === -1) throw new Error('상품을 찾을 수 없습니다.');
+
+    cart.items[index].qty = qty;
+    await cart.save();
+
+    req.statusCode = 200;
+    req.data = cart.items;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
 export default cartController;

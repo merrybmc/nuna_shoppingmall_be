@@ -13,4 +13,7 @@ router.get('/', authRepository.authenticate, cartController.getCart, intercepter
 // 카트 삭제
 router.delete('/:id', authRepository.authenticate, cartController.deleteCartItem, intercepter);
 
+// 카트 개수 수정
+router.put('/:id', authRepository.authenticate, cartController.editCartItem, intercepter);
+
 export default router;
