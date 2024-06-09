@@ -109,4 +109,21 @@ cartController.editCartItem = async (req, res, next) => {
   }
   next();
 };
+
+// 전체 qty 조회
+cartController.getCartQty = async (req, res, next) => {
+  try {
+    const { validTokenId } = req;
+    const cart = await Cart.findOne({ validTokenId });
+
+    if (!cart) throw new Error('카트가 존재하지 않습니다.');
+
+    req.statusCode = 200;
+    req.data = cart.items.length;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
 export default cartController;
