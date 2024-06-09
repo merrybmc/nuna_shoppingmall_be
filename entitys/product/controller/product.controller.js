@@ -127,9 +127,21 @@ productController.updateProduct = async (req, res, next) => {
     if (req.statusCode === 400) return next();
 
     const { id } = req.params;
-    const { sku, name, size, kind, category, description, price, stock, status } = req.body;
+    const { defaultimage, sku, name, size, kind, category, description, price, stock, status } =
+      req.body;
 
-    const images = req.files.map((file) => file.location);
+    let images = [];
+
+    if (defaultimage) {
+      let parsedDefaultImages = JSON.parse(defaultimage);
+      parsedDefaultImages.forEach((item) => {
+        images.push(item.data);
+      });
+    }
+
+    if (req.files && req.files.length > 0) {
+      images = images.concat(req.files.map((file) => file.location));
+    }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
