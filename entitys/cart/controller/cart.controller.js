@@ -11,8 +11,6 @@ cartController.addItemToCart = async (req, res, next) => {
     const { validTokenId } = req;
     const { productId, size, qty } = req.body;
 
-    console.log(productId);
-
     let cart = await Cart.findOne({ validTokenId });
 
     // 카트 자체가 없는지?
@@ -52,6 +50,24 @@ cartController.getCart = async (req, res, next) => {
       populate: { path: 'productId', model: 'Product' },
     });
 
+    req.statusCode = 200;
+    req.data = cart;
+  } catch (e) {
+    req.statusCode = 400;
+    req.error = e.message;
+  }
+  next();
+};
+
+// 카트 삭제
+cartController.deleteCartItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req;
+    const cart = await Cart.findOne({ userId });
+    cart.items = cart.items.filter((item) => !item._id.equals(id));
+
+    await cart.save();
     req.statusCode = 200;
     req.data = cart;
   } catch (e) {
