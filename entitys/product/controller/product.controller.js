@@ -53,26 +53,18 @@ productController.getProducts = async (req, res, next) => {
       cond.name = { $regex: name, $options: 'i' };
     }
 
-    // Filtering logic based on provided kind and category values
-    if (kind && !category) {
+    if (kind) {
       cond.kind = { $in: kind.split(',') };
-    } else if (!kind && category) {
-      cond.category = { $in: category.split(',') };
-    } else if (kind && category) {
-      cond.kind = { $in: kind.split(',') };
+    }
+    if (category) {
       cond.category = { $in: category.split(',') };
     }
 
-    const query = Product.find(cond);
-
-    // If neither kind nor category is provided, apply pagination
     if (!kind && !category) {
-      const totalItemNum = await Product.find(cond).count();
+      const totalItemNum = await Product.countDocuments(cond);
       const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
       const currentPage = page;
       const keyword = name;
-
-      query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
 
       productList = {
         keyword,
@@ -82,7 +74,11 @@ productController.getProducts = async (req, res, next) => {
       };
     }
 
-    const products = await query.exec();
+    // Fetch products
+    const products = await Product.find(cond)
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE)
+      .exec();
 
     if (products.length === 0) throw new Error('상품이 존재하지 않습니다.');
 
@@ -90,29 +86,17 @@ productController.getProducts = async (req, res, next) => {
       productList = { ...productList, products };
       req.products = productList;
     } else {
-      if ((kind && kind.split(',').length > 1) || (category && category.split(',').length > 1)) {
-        const men = products.filter((item) => item.kind === 'men');
-        const women = products.filter((item) => item.kind === 'women');
-        const kids = products.filter((item) => item.kind === 'kids');
-        const top = products.filter((item) => item.category === 'top');
-        const bottom = products.filter((item) => item.category === 'bottom');
-        const shoes = products.filter((item) => item.category === 'shoes');
-        const bag = products.filter((item) => item.category === 'bag');
-        const accessory = products.filter((item) => item.category === 'accessory');
+      // Categorize products
+      const categorizedProducts = products.reduce((acc, item) => {
+        const { kind, category } = item;
+        acc[kind] = acc[kind] || [];
+        acc[kind].push(item);
+        acc[category] = acc[category] || [];
+        acc[category].push(item);
+        return acc;
+      }, {});
 
-        req.products = {
-          menData: men,
-          womenData: women,
-          kidsData: kids,
-          topData: top,
-          bottomData: bottom,
-          shoesData: shoes,
-          bagData: bag,
-          accessoryData: accessory,
-        };
-      } else {
-        req.products = { products };
-      }
+      req.products = categorizedProducts;
     }
   } catch (e) {
     req.statusCode = 400;
