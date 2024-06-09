@@ -4,11 +4,9 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import indexRouter from './routes/index.js';
 import cookieParser from 'cookie-parser';
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
-// dotenv.config();
-
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 const corsOption = {
