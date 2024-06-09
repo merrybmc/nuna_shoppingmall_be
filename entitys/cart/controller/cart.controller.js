@@ -60,7 +60,7 @@ cartController.getCart = async (req, res, next) => {
 };
 
 // 카트 삭제
-cartController.deleteCartItem = async (req, res) => {
+cartController.deleteCartItem = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { userId } = req;
