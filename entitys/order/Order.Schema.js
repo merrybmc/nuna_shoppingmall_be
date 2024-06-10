@@ -1,13 +1,23 @@
-const mongoose = require('mongoose');
-const User = require('../user/User.Schema');
-const Product = require('../product/Product.Schema');
+import mongoose from 'mongoose';
+import User from '../user/User.Schema.js';
+import Product from '../product/Product.Schema.js';
+
 const Schema = mongoose.Schema;
 
 const orderSchema = Schema(
   {
     userId: { type: mongoose.ObjectId, ref: User },
-    shipTo: { type: String, required: true },
-    contact: { type: String, required: true },
+    orderNum: { type: String },
+    shipTo: {
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      zip: { type: String, required: true },
+    },
+    contact: {
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      contact: { type: String, required: true },
+    },
     totalPrice: { type: Number, required: true },
     status: { type: Boolean, required: false },
     items: [
@@ -25,9 +35,10 @@ const orderSchema = Schema(
 orderSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.__v;
-  delete obj.updateAt;
+  delete obj.updatedAt;
   return obj;
 };
 
-const Order = mongoose.model('Other', orderSchema);
-module.exports = Order;
+const Order = mongoose.model('Order', orderSchema);
+
+export default Order;
