@@ -20,7 +20,7 @@ orderController.createOrder = async (req, res, next) => {
     }
 
     const newOrder = new Order({
-      validTokenId,
+      userId: validTokenId,
       totalPrice,
       shipTo,
       contact,
@@ -30,8 +30,7 @@ orderController.createOrder = async (req, res, next) => {
 
     await newOrder.save();
 
-    req.statusCode = 200;
-    req.data = { orderNum: newOrder.orderNum };
+    res.status(200).json({ status: 'success', orderNum: newOrder.orderNum });
   } catch (e) {
     res.status(400).json({ status: 'fail', error: e.message });
   }

@@ -8,7 +8,7 @@ const productSchema = Schema(
     images: { type: [String], required: true },
     kind: { type: String },
     category: { type: String },
-    description: { type: String, required: true },
+    description: { type: String },
     price: { type: Number, required: true },
     stock: { type: [Map], of: Number, required: true },
     status: { type: String, default: 'active' },

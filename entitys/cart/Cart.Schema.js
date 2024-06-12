@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import User from '../user/User.Schema.js';
 import Product from '../product/Product.Schema.js';
+
 const Schema = mongoose.Schema;
 
 const cartSchema = Schema(
   {
-    validTokenId: { type: mongoose.ObjectId, ref: User },
+    validTokenId: { type: mongoose.ObjectId, ref: User, required: true },
     items: [
       {
         productId: { type: mongoose.ObjectId, ref: Product },
