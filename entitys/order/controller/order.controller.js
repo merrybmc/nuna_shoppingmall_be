@@ -10,8 +10,6 @@ orderController.createOrder = async (req, res, next) => {
     const { validTokenId } = req;
     const { shipTo, contact, totalPrice, orderList } = req.body;
 
-    console.log('Creating order for user:', validTokenId);
-
     const insufficientStockItems = await productController.checkItemListStock(orderList);
 
     if (insufficientStockItems.length > 0) {
@@ -26,16 +24,16 @@ orderController.createOrder = async (req, res, next) => {
     for (const item of orderList) {
       const product = await Product.findById(item.productId);
       if (product) {
-        // stock 배열에서 해당 사이즈를 찾아 재고를 감소시킴
-        const stockItem = product.stock.find((stock) => stock.size === item.size);
-        if (stockItem) {
-          stockItem.qty -= item.qty;
+        // stock 객체에서 해당 사이즈의 재고를 감소시킴
+        if (product.stock[item.size] !== undefined) {
+          product.stock[item.size] -= item.qty;
         } else {
-          throw new Error(`Product stock for size ${item.size} not found`);
+          throw new Error('재고를 찾을 수 없습니다.');
         }
+
         await product.save();
       } else {
-        throw new Error(`Product with ID ${item.productId} not found`);
+        throw new Error(`상품을 찾을 수 없습니다.`);
       }
     }
 
