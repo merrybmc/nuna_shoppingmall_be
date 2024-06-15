@@ -5,6 +5,8 @@ import orderController from './controller/order.controller.js';
 const router = express.Router();
 
 // order 생성
-router.post('/', authRepository.authenticate, orderController.createOrder, intercepter);
+router.post('/', authRepository.authenticate, orderController.createOrder);
 
+// 내 주문 페이지
+// router.get('/me', authRepository.authenticate, orderController.getOrder);
 export default router;

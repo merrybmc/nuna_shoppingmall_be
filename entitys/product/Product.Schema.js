@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const productSchema = Schema(
+const productSchema = new Schema(
   {
     sku: { type: String, required: true, unique: true },
     name: { type: String, required: true },
@@ -10,7 +10,7 @@ const productSchema = Schema(
     category: { type: String },
     description: { type: String },
     price: { type: Number, required: true },
-    stock: { type: [Map], of: Number, required: true },
+    stock: { type: Object, required: true },
     status: { type: String, default: 'active' },
     isDeleted: { type: Boolean, default: false },
   },
